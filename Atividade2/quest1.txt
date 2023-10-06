@@ -1,0 +1,1 @@
+Uma classe coesa quer dizer que uma classe tem coesão com suas funcionalidades, seu nome e seus métodos. Uma classe coesa realiza apenas funções que se tratam da mesma coisa.
