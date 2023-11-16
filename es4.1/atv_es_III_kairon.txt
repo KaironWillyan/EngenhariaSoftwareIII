@@ -1,0 +1,165 @@
+O Princípio da Substituição de Liskov (Liskov Substitution Principle - LSP) é um dos princípios SOLID da programação orientada a objetos. 
+Foi formulado por Barbara Liskov em 1987 e é baseado em seu trabalho na linguagem de programação CLU.
+
+Aqui estão as respostas para suas perguntas:
+
+1. Por que o uso do nome próprio Liskov?
+    O princípio recebe o nome de Barbara Liskov, a pesquisadora que o formulou. 
+   Ela introduziu o conceito em sua palestra intitulada "Data Abstraction" em 1987. 
+   O uso do nome próprio é uma prática comum na nomenclatura de princípios e leis científicas para homenagear os seus formuladores.
+
+2.  Qual a principal imagem relacionada ao princípio e qual a explicação sobre ela?
+     A principal imagem associada ao Princípio da Substituição de Liskov é a do quadrado e retângulo. 
+   Barbara Liskov usou esse exemplo para ilustrar a violação do princípio na herança clássica. 
+   No caso, se você tem uma hierarquia de classes onde Quadrado é uma subclasse de Retângulo, as propriedades típicas de um retângulo (como a capacidade de ter larguras e alturas diferentes) podem ser violadas se você tratar um quadrado como um retângulo, alterando sua largura ou altura.
+
+3. Cite um exemplo onde a herança pode ser usada de forma conveniente, porém deixa uma impressão de que está sendo mal aplicada.
+Tendo uma classe base Animal que possui métodos comuns a todos os animais, como comer e dormir. 
+A subclasse Ave herda esses métodos, mas também possui um método específico voar. 
+No entanto, a herança pode parecer inadequada se considerarmos outros tipos de animais que não voam, como peixes. 
+Isso poderia levar a uma hierarquia complicada e métodos que não fazem sentido para todos os tipos de animais.
+   class Animal {
+       public void comer() {
+           System.out.println("O animal está comendo.");
+       }
+   
+       public void dormir() {
+           System.out.println("O animal está dormindo.");
+       }
+   }
+   
+   class Ave extends Animal {
+       public void voar() {
+           System.out.println("A ave está voando.");
+       }
+   }
+
+4.  Temos uma classe base FormaGeometrica possui a lógica para calcular a área, e a subclasse Circulo herda essa lógica,
+adicionando um método específico para obter o raio. No entanto, se quisermos adicionar uma nova forma tridimensional,
+como um cilindro, a hierarquia existente pode não ser a melhor escolha, pois um cilindro teria tanto altura quanto raio,
+características que não se encaixam perfeitamente na hierarquia atual.
+   código: 
+class FormaGeometrica {
+    protected double area;
+
+    public FormaGeometrica(double area) {
+        this.area = area;
+    }
+
+    public double calcularArea() {
+        return area;
+    }
+}
+class Circulo extends FormaGeometrica {
+    private double raio;
+
+    public Circulo(double raio) {
+        super(Math.PI * Math.pow(raio, 2));
+        this.raio = raio;
+    }
+
+    public double getRaio() {
+        return raio;
+    }
+}
+
+5. Nos exemplos que você citou, a composição seria mais aplicável? Refaça-os.
+interface ComportamentoVoo {
+    void voar();
+}
+
+class VooComAsas implements ComportamentoVoo {
+    @Override
+    public void voar() {
+        System.out.println("A ave está voando com asas.");
+    }
+}
+
+class Animal {
+    public void comer() {
+        System.out.println("O animal está comendo.");
+    }
+
+    public void dormir() {
+        System.out.println("O animal está dormindo.");
+    }
+}
+
+class Ave {
+    private Animal animal;
+    private ComportamentoVoo comportamentoVoo;
+
+    public Ave() {
+        this.animal = new Animal();
+        this.comportamentoVoo = new VooComAsas();
+    }
+
+    public void comer() {
+        animal.comer();
+    }
+
+    public void dormir() {
+        animal.dormir();
+    }
+
+    public void voar() {
+        comportamentoVoo.voar();
+    }
+}
+
+public class ExemploComposicao {
+    public static void main(String[] args) {
+        Ave ave = new Ave();
+        ave.comer();
+        ave.dormir();
+        ave.voar();
+    }
+}
+Agora, a classe Ave não herda de Animal, mas utiliza composição com um objeto Animal
+para os comportamentos comuns e um objeto ComportamentoVoo para representar o comportamento específico de voar.
+Essa abordagem é mais flexível e evita alguns dos problemas associados à herança.
+----------------------------------------------------------------------------------------------------------------------
+interface CalculadoraArea {
+    double calcularArea();
+}
+
+class CalculadoraAreaCirculo implements CalculadoraArea {
+    private double raio;
+
+    public CalculadoraAreaCirculo(double raio) {
+        this.raio = raio;
+    }
+
+    @Override
+    public double calcularArea() {
+        return Math.PI * Math.pow(raio, 2);
+    }
+}
+
+class Circulo {
+    private CalculadoraArea calculadoraArea;
+    private double raio;
+
+    public Circulo(double raio) {
+        this.calculadoraArea = new CalculadoraAreaCirculo(raio);
+        this.raio = raio;
+    }
+
+    public double calcularArea() {
+        return calculadoraArea.calcularArea();
+    }
+
+    public double getRaio() {
+        return raio;
+    }
+}
+
+public class ExemploComposicao {
+    public static void main(String[] args) {
+        Circulo circulo = new Circulo(5.0);
+        System.out.println("Área do círculo: " + circulo.calcularArea());
+        System.out.println("Raio do círculo: " + circulo.getRaio());
+    }
+}
+Utilizando composição, a classe Circulo não herda de FormaGeometrica, mas utiliza composição com um objeto CalculadoraArea para realizar o cálculo da área.
+Isso oferece uma abordagem mais flexível, evitando os problemas associados à herança em certos contextos.
